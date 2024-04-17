@@ -26,7 +26,7 @@ WORKDIR /app
 
 RUN ls -al
 
-COPY ./subscription-management-0.0.1-SNAPSHOT.jar /app
+COPY ./rating-0.0.1-SNAPSHOT.jar /app
 
 EXPOSE 8080
 
