@@ -16,6 +16,7 @@ public class RatingTest {
         this.rating.setRatingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         this.rating.setRatingScore(5);
         this.rating.setReview("Barang bagus punya nih");
+        this.rating.setStatus("PENDING");
 
         user = new User();
 
@@ -40,5 +41,10 @@ public class RatingTest {
     @Test
     public void testGetReview(){
         assertEquals("Barang bagus punya nih", rating.getReview());
+    }
+
+    @Test
+    public void testGetStatus(){
+        assertEquals("PENDING", rating.getStatus());
     }
 }
