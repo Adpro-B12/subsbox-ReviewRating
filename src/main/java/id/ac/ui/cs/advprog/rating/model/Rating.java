@@ -8,7 +8,7 @@ public class Rating {
     private String ratingId;
     private String status;
     private int ratingScore;
-    private String ratingReview;
+    private String review;
     private User user;
     private SubscriptionBox subscriptionBox;
 }
