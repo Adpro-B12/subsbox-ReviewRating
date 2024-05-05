@@ -52,7 +52,18 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public Rating findById(String ratingId) {
-        return null;
+    public Rating editRating(Rating rating, String ratingId) {
+        Iterator<Rating> ratingIterator = ratingRepository.findAll();
+
+        int index = 0;
+        while(ratingIterator.hasNext()){
+            Rating current = ratingIterator.next();
+            if(current.getRatingId().equals(ratingId)){
+                rating.setRatingId(current.getRatingId());
+                break;
+            }
+            index++;
+        }
+        return ratingRepository.edit(rating, index);
     }
 }

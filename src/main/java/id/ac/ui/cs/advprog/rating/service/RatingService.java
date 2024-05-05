@@ -8,6 +8,6 @@ public interface RatingService {
     public Rating create(Rating rating);
     public List<Rating> findAll();
     public boolean delete(String ratingId);
-    public Rating findById(String ratingId);
+    public Rating editRating(Rating rating, String ratingId);
     public Rating get(String ratingId);
 }

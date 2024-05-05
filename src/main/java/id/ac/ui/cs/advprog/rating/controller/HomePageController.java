@@ -10,7 +10,7 @@ public class HomePageController {
     String createHTML = "userCreate";
     @GetMapping("")
     @ResponseBody
-    public String createUserPage(Model model) {
+    public String createUserPage() {
         return "<h1>Test Rating Page sudah berhasil!</h1>";
     }
 }
