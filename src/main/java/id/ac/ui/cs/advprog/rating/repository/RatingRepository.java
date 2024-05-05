@@ -36,4 +36,8 @@ public class RatingRepository {
     public boolean deleteRating(Rating rating){
         return ratingList.remove(rating);
     }
+
+    public Rating edit(Rating rating, int index){
+        return ratingList.set(index, rating);
+    }
 }
