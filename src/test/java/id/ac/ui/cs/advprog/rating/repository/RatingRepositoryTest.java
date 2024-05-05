@@ -73,7 +73,7 @@ public class RatingRepositoryTest {
         ratingRepository.create(rating1);
         ratingRepository.create(rating2);
 
-        ratingRepository.deleteRating("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        ratingRepository.deleteRating(rating1);
 
         Iterator<Rating> ratingIterator = ratingRepository.findAll();
         assertTrue(ratingIterator.hasNext());

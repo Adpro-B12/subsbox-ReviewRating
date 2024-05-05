@@ -33,7 +33,7 @@ public class RatingRepository {
         return null;
     }
 
-    public boolean deleteRating(String id){
-        ratingList.removeIf(rating -> rating.getRatingId().equals(id));
+    public boolean deleteRating(Rating rating){
+        return ratingList.remove(rating);
     }
 }

@@ -9,4 +9,5 @@ public interface RatingService {
     public List<Rating> findAll();
     public boolean delete(String ratingId);
     public Rating findById(String ratingId);
+    public Rating get(String ratingId);
 }

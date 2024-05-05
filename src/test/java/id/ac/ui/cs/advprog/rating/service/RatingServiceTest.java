@@ -49,14 +49,14 @@ public class RatingServiceTest {
         List<Rating> result = ratingService.findAll();
 
         assertEquals(rating, result);
-        verify(ratingRepository, times(1).findAll());
+        verify(ratingRepository, times(1)).findAll();
     }
 
     @Test
     void testDelete(){
         ratingRepository.create(rating);
 
-        when(ratingRepository.deleteRating(rating.getRatingId())).thenReturn(true);
-        assertTrue(ratingRepository.deleteRating(rating.getRatingId()));
+        when(ratingRepository.deleteRating(rating)).thenReturn(true);
+        assertTrue(ratingRepository.deleteRating(rating));
     }
 }
