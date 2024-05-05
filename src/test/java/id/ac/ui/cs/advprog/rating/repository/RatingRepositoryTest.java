@@ -1,16 +1,15 @@
 package id.ac.ui.cs.advprog.rating.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Iterator;
-import java.util.List;
-
 import id.ac.ui.cs.advprog.rating.model.Rating;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Iterator;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class RatingRepositoryTest {
