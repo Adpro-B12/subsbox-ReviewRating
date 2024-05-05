@@ -17,10 +17,8 @@ public class RatingTest {
         this.rating.setRatingScore(5);
         this.rating.setReview("Barang bagus punya nih");
         this.rating.setStatus("PENDING");
-
-        user = new User();
-
-        subscriptionBox = new SubscriptionBox();
+        this.rating.setUser(new User());
+        this.rating.setSubscriptionBox(new SubscriptionBox());
     }
 
     @Test
