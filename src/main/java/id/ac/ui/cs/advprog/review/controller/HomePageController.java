@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.rating.controller;
+package id.ac.ui.cs.advprog.review.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
