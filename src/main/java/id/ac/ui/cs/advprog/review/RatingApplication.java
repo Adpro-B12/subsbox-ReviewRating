@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.rating;
+package id.ac.ui.cs.advprog.review;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.rating.model;
+package id.ac.ui.cs.advprog.review.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RatingTest {
-    private  Rating rating;
+    private  Review rating;
     private User user;
     private SubscriptionBox subscriptionBox;
 
     @BeforeEach
     public void setUp(){
-        rating = new Rating();
-        this.rating.setRatingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        rating = new Review();
+        this.rating.setReviewId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         this.rating.setRatingScore(5);
         this.rating.setReview("Barang bagus punya nih");
         this.rating.setStatus("PENDING");
@@ -22,13 +22,13 @@ public class RatingTest {
     }
 
     @Test
-    public void testCreateRating(){
+    public void testCreateReview(){
         assertNotNull(rating);
     }
 
     @Test
-    public void testGetRatingId(){
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", rating.getRatingId());
+    public void testGetReviewId(){
+        assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", rating.getReviewId());
     }
 
     @Test

@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.rating;
+package id.ac.ui.cs.advprog.review;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
