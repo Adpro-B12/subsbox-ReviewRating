@@ -1,13 +1,17 @@
 package id.ac.ui.cs.advprog.review.model;
 
 import enums.Status;
+import id.ac.ui.cs.advprog.review.state.PendingReviewState;
+import id.ac.ui.cs.advprog.review.state.ReviewState;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "Review")
-@Setter@Getter
+@Getter
+@NoArgsConstructor
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,25 +33,24 @@ public class Review {
     @Column(name = "subscriptionBox")
     private SubscriptionBox subscriptionBox;
 
-    public Review(String reviewId, int ratingScore, String review, User user, SubscriptionBox subscriptionBox){
-        this.reviewId = reviewId;
-        this.ratingScore = ratingScore;
-        this.review = review;
-        this.user = user;
-        this.subscriptionBox = subscriptionBox;
-        this.status = Status.PENDING.getValue();
+    // Constructor
+    public Review(ReviewBuilder builder){
+        this.reviewId = builder.getReviewId();
+        this.ratingScore = builder.getRatingScore();
+        this.review = builder.getReview();
+        this.user = builder.getUser();
+        this.subscriptionBox = builder.getSubscriptionBox();
+        this.status = builder.getStatus();
     }
 
-    public Review(String ratingId, int ratingScore, String review, User user, SubscriptionBox subscriptionBox, String status){
-        this(ratingId, ratingScore, review, user, subscriptionBox);
-        this.setStatus(status);
-    }
-
+    // Setter for status
     public void setStatus(String status) {
-        if (status.contains(status)) {
+        if (status.equals(Status.PENDING.getValue()) || status.equals(Status.APPROVED.getValue()) || status.equals(Status.REJECTED.getValue())) {
             this.status = status;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid status");
         }
     }
+
+    public  Review(){}
 }
