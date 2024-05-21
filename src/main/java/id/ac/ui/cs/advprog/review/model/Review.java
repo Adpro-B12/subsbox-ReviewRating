@@ -1,8 +1,11 @@
 package id.ac.ui.cs.advprog.review.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import enums.Status;
-import id.ac.ui.cs.advprog.review.state.PendingReviewState;
-import id.ac.ui.cs.advprog.review.state.ReviewState;
+import id.ac.ui.cs.advprog.review.State.ApprovedState;
+import id.ac.ui.cs.advprog.review.State.PendingState;
+import id.ac.ui.cs.advprog.review.State.RejectedState;
+import id.ac.ui.cs.advprog.review.State.ReviewState;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,16 +13,12 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "Review")
-@Getter
-@NoArgsConstructor
+@Getter@Setter
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+//    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "review_Id")
     private String reviewId;
-
-    @Column(name = "status_Review")
-    private String status;
 
     @Column(name = "rating_Score")
     private int ratingScore;
@@ -28,29 +27,53 @@ public class Review {
     private String review;
 
     @Column(name = "user")
-    private User user;
+    private String userId;
 
     @Column(name = "subscriptionBox")
-    private SubscriptionBox subscriptionBox;
+    private String subscriptionBoxId;
 
-    // Constructor
-    public Review(ReviewBuilder builder){
-        this.reviewId = builder.getReviewId();
-        this.ratingScore = builder.getRatingScore();
-        this.review = builder.getReview();
-        this.user = builder.getUser();
-        this.subscriptionBox = builder.getSubscriptionBox();
-        this.status = builder.getStatus();
+    @Transient
+    @JsonIgnore
+    private ReviewState state;
+
+    @Column(name = "state", nullable = false)
+    @JsonIgnore
+    private String stateString;
+
+    @Column(name = "review_status")
+    private Status reviewStatus;
+
+    public Review(){
+        this.stateString = Status.PENDING.getValue();
+        this.state = new PendingState();
     }
 
-    // Setter for status
-    public void setStatus(String status) {
-        if (status.equals(Status.PENDING.getValue()) || status.equals(Status.APPROVED.getValue()) || status.equals(Status.REJECTED.getValue())) {
-            this.status = status;
-        } else {
-            throw new IllegalArgumentException("Invalid status");
+    public Review(String reviewId, int ratingScore, String review, String userId, String subscriptionBoxId){
+        this.reviewId = reviewId;
+        this.ratingScore = ratingScore;
+        this.review = review;
+        this.userId = userId;
+        this.subscriptionBoxId = subscriptionBoxId;
+        this.state = new PendingState();
+        this. reviewStatus = Status.PENDING;
+        this.stateString = Status.PENDING.toString();
+    }
+
+    public void approve(){
+        state.approve(this);
+        this.stateString = "APPROVED";
+    }
+
+    public void postload(){
+        switch (stateString){
+            case "APPROVED" -> this.state = new ApprovedState();
+            case "REJECTED" -> this.state = new RejectedState();
+            default -> this.state = new PendingState();
         }
     }
 
-    public  Review(){}
+    public void reject(){
+        state.reject(this);
+        this.stateString = "REJECTED";
+    }
 }

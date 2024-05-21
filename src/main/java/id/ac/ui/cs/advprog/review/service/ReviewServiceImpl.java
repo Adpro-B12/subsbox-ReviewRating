@@ -2,13 +2,12 @@ package id.ac.ui.cs.advprog.review.service;
 
 import id.ac.ui.cs.advprog.review.model.Review;
 import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -16,54 +15,39 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     ReviewRepository reviewRepository;
     @Override
-    @Async
-    public CompletableFuture<Review> create(Review review) {
-        return CompletableFuture.completedFuture(reviewRepository.create(review));
+    public Review create(Review review) {
+        reviewRepository.create(review);
+        return review;
     }
 
     @Override
-    @Async
-    public CompletableFuture<Iterator<Review>> findAll() {
-        return CompletableFuture.completedFuture(reviewRepository.findAll());
+    public List<Review> findAll() {
+        Iterator<Review> reviewIterator = reviewRepository.findAll();
+        List<Review> reviewList = new ArrayList<>();
+        reviewIterator.forEachRemaining(reviewList::add);
+        return reviewList;
     }
 
     @Override
-    @Async
-    public CompletableFuture<Boolean> delete(String reviewId) {
-        Review review = get(reviewId);
-        if (review != null) {
+    public boolean delete(String reviewId) {
+        Review review = findById(reviewId);
+
+        if(review != null){
             reviewRepository.deleteReview(review);
-            return CompletableFuture.completedFuture(true);
+            return true;
         }
-        return CompletableFuture.completedFuture(false);
+        return false;
     }
 
-    public Review get(String reviewId){
+    public Review findById(String reviewId){
         Iterator<Review> reviewIterator = reviewRepository.findAll();
 
         while (reviewIterator.hasNext()){
             Review current = reviewIterator.next();
             if(current.getReviewId().equals(reviewId)){
-                return (current);
+                return current;
             }
         }
-        return (null);
-    }
-
-    @Override
-    @Async
-    public CompletableFuture<Review> editReview(Review review, String reviewId) {
-        Iterator<Review> reviewIterator = reviewRepository.findAll();
-
-        int index = 0;
-        while(reviewIterator.hasNext()){
-            Review current = reviewIterator.next();
-            if(current.getReviewId().equals(reviewId)){
-                review.setReviewId(current.getReviewId());
-                break;
-            }
-            index++;
-        }
-        return CompletableFuture.completedFuture(reviewRepository.edit(review, index));
+        return null;
     }
 }
