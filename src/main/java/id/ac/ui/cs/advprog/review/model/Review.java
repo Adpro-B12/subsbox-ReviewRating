@@ -8,15 +8,14 @@ import id.ac.ui.cs.advprog.review.State.RejectedState;
 import id.ac.ui.cs.advprog.review.State.ReviewState;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Review")
+@Table(name = "review")
 @Getter@Setter
 public class Review {
     @Id
-//    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "review_Id")
     private String reviewId;
 
@@ -26,7 +25,7 @@ public class Review {
     @Column(name = "review_user")
     private String review;
 
-    @Column(name = "user")
+    @Column(name = "userId")
     private String userId;
 
     @Column(name = "subscriptionBox")
