@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.review.controller;
 
+import enums.Status;
 import id.ac.ui.cs.advprog.review.model.Review;
 import id.ac.ui.cs.advprog.review.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/reviews")
@@ -29,8 +31,9 @@ public class ReviewPageController {
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(@PathVariable String reviewId) {
-        boolean isDeleted = reviewService.delete(reviewId);
-        if (isDeleted) {
+        Optional<Review> review = reviewService.findReviewById(reviewId);
+        if (review.isPresent()) {
+            reviewService.delete(reviewId);
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -38,12 +41,21 @@ public class ReviewPageController {
     }
 
     @GetMapping("/{reviewId}")
-    public ResponseEntity<Review> getReviewById(@PathVariable String reviewId) {
-        Review review = reviewService.findById(reviewId);
-        if (review != null) {
-            return ResponseEntity.ok(review);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Review> getReviewByReviewId(@PathVariable String reviewId) {
+        Optional<Review> review = reviewService.findReviewById(reviewId);
+        return review.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{reviewId}/status")
+    public ResponseEntity<Review> updateReviewStatus(@PathVariable String reviewId, @RequestParam String status) {
+        Review updatedReview = reviewService.updateReviewStatus(reviewId, status);
+        return ResponseEntity.ok(updatedReview);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Review>> getAllReviewsByUserId(@PathVariable String userId) {
+        List<Review> reviews = reviewService.findAllByUserId(userId);
+        return ResponseEntity.ok(reviews);
     }
 }

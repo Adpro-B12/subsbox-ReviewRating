@@ -1,13 +1,13 @@
 package id.ac.ui.cs.advprog.review.service;
 
+import enums.Status;
 import id.ac.ui.cs.advprog.review.model.Review;
 import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -16,38 +16,41 @@ public class ReviewServiceImpl implements ReviewService {
     ReviewRepository reviewRepository;
     @Override
     public Review create(Review review) {
-        reviewRepository.create(review);
-        return review;
+        return reviewRepository.save(review);
     }
 
     @Override
     public List<Review> findAll() {
-        Iterator<Review> reviewIterator = reviewRepository.findAll();
-        List<Review> reviewList = new ArrayList<>();
-        reviewIterator.forEachRemaining(reviewList::add);
-        return reviewList;
+        return reviewRepository.findAll();
     }
 
     @Override
-    public boolean delete(String reviewId) {
-        Review review = findById(reviewId);
-
-        if(review != null){
-            reviewRepository.deleteReview(review);
-            return true;
-        }
-        return false;
+    public void delete(String reviewId) {
+        reviewRepository.deleteById(reviewId);
     }
 
-    public Review findById(String reviewId){
-        Iterator<Review> reviewIterator = reviewRepository.findAll();
+    @Override
+    public Optional<Review> findReviewById(String reviewId) {
+        return reviewRepository.findById(reviewId);
+    }
 
-        while (reviewIterator.hasNext()){
-            Review current = reviewIterator.next();
-            if(current.getReviewId().equals(reviewId)){
-                return current;
-            }
+    public List<Review> findAllByUserId(String userId){
+        return reviewRepository.findAllByUserId(userId);
+    }
+
+    @Override
+    public Review updateReviewStatus(String reviewId, String status){
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new IllegalArgumentException("Review not found with ID: " + reviewId));
+        if (status.equalsIgnoreCase(Status.APPROVED.toString())) {
+            review.approve();
+        } else if (status.equalsIgnoreCase(Status.REJECTED.toString())) {
+            review.reject();
+        } else {
+            throw new IllegalArgumentException("Invalid status");
         }
-        return null;
+
+        reviewRepository.save(review);
+        return review;
     }
 }
