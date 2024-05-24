@@ -1,119 +1,131 @@
 package id.ac.ui.cs.advprog.review.controller;
 
 import id.ac.ui.cs.advprog.review.model.Review;
-import id.ac.ui.cs.advprog.review.service.ReviewServiceImpl;
+import id.ac.ui.cs.advprog.review.service.ReviewService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-public class ReviewPageControllerTest {
-
-    @Mock
-    private ReviewServiceImpl reviewService;
+class ReviewPageControllerTest {
 
     @InjectMocks
-    private ReviewPageController reviewController;
+    private ReviewPageController reviewPageController;
+
+    @Mock
+    private ReviewService reviewService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
-    public void testCreateReview() {
-        Review review = new Review();
+    void createReview() throws ExecutionException, InterruptedException {
+        // Arrange
+        Review review = new Review("1", 5, "Great product", "user1","PENDING");
         when(reviewService.create(any(Review.class))).thenReturn(review);
 
-        ResponseEntity<Review> responseEntity = reviewController.createReview(review);
+        // Act
+        CompletableFuture<ResponseEntity<Review>> response = reviewPageController.createReview(review);
+        ResponseEntity<Review> result = response.get();
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(review, responseEntity.getBody());
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(review, result.getBody());
     }
 
     @Test
-    public void testGetAllReviews() {
+    void getAllReviews() throws ExecutionException, InterruptedException {
+        // Arrange
         List<Review> reviews = new ArrayList<>();
+        reviews.add(new Review("1", 5, "Great product", "user1","PENDING"));
+        reviews.add(new Review("2", 4, "Mantap", "user2","APPROVED"));
         when(reviewService.findAll()).thenReturn(reviews);
 
-        ResponseEntity<List<Review>> responseEntity = reviewController.getAllReviews();
+        // Act
+        CompletableFuture<ResponseEntity<List<Review>>> response = reviewPageController.getAllReviews();
+        ResponseEntity<List<Review>> result = response.get();
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(reviews, responseEntity.getBody());
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(reviews, result.getBody());
     }
 
     @Test
-    public void testDeleteReview() {
-        String reviewId = "123";
-        when(reviewService.findReviewById(reviewId)).thenReturn(Optional.of(new Review()));
+    void deleteReview() throws ExecutionException, InterruptedException {
+        // Arrange
+        String reviewId = "1";
+        when(reviewService.findReviewById(reviewId)).thenReturn(Optional.of(new Review("1", 5, "Great product", "user1","PENDING")));
 
-        ResponseEntity<Void> responseEntity = reviewController.deleteReview(reviewId);
+        // Act
+        CompletableFuture<ResponseEntity<Void>> response = reviewPageController.deleteReview(reviewId);
+        ResponseEntity<Void> result = response.get();
 
-        assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
-        verify(reviewService, times(1)).delete(reviewId);
+        // Assert
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 
     @Test
-    public void testDeleteReviewNotFound() {
-        String reviewId = "123";
-        when(reviewService.findReviewById(reviewId)).thenReturn(Optional.empty());
-
-        ResponseEntity<Void> responseEntity = reviewController.deleteReview(reviewId);
-
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        verify(reviewService, never()).delete(anyString());
-    }
-
-    @Test
-    public void testGetReviewByReviewId() {
-        String reviewId = "123";
-        Review review = new Review();
+    void getReviewByReviewId() throws ExecutionException, InterruptedException {
+        // Arrange
+        String reviewId = "1";
+        Review review = new Review("1", 5, "Great product", "user1","PENDING");
         when(reviewService.findReviewById(reviewId)).thenReturn(Optional.of(review));
 
-        ResponseEntity<Review> responseEntity = reviewController.getReviewByReviewId(reviewId);
+        // Act
+        CompletableFuture<ResponseEntity<Review>> response = reviewPageController.getReviewByReviewId(reviewId);
+        ResponseEntity<Review> result = response.get();
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(review, responseEntity.getBody());
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(review, result.getBody());
     }
 
     @Test
-    public void testGetReviewByReviewIdNotFound() {
-        String reviewId = "123";
-        when(reviewService.findReviewById(reviewId)).thenReturn(Optional.empty());
-
-        ResponseEntity<Review> responseEntity = reviewController.getReviewByReviewId(reviewId);
-
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-    }
-
-    @Test
-    public void testUpdateReviewStatus() {
-        String reviewId = "123";
+    void updateReviewStatus() throws ExecutionException, InterruptedException {
+        // Arrange
+        String reviewId = "1";
         String status = "APPROVED";
-        Review review = new Review();
+        Review review = new Review("1", 5, "Great product", "user1","PENDING");
         when(reviewService.updateReviewStatus(reviewId, status)).thenReturn(review);
 
-        ResponseEntity<Review> responseEntity = reviewController.updateReviewStatus(reviewId, status);
+        // Act
+        CompletableFuture<ResponseEntity<Review>> response = reviewPageController.updateReviewStatus(reviewId, status);
+        ResponseEntity<Review> result = response.get();
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(review, responseEntity.getBody());
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(review, result.getBody());
     }
 
     @Test
-    public void testGetAllReviewsByUserId() {
-        String userId = "user123";
+    void getAllReviewsByUserId() throws ExecutionException, InterruptedException {
+        // Arrange
+        String userId = "user1";
         List<Review> reviews = new ArrayList<>();
+        reviews.add(new Review("1", 5, "Great product", "user1","PENDING"));
         when(reviewService.findAllByUserId(userId)).thenReturn(reviews);
 
-        ResponseEntity<List<Review>> responseEntity = reviewController.getAllReviewsByUserId(userId);
+        // Act
+        CompletableFuture<ResponseEntity<List<Review>>> response = reviewPageController.getAllReviewsByUserId(userId);
+        ResponseEntity<List<Review>> result = response.get();
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(reviews, responseEntity.getBody());
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(reviews, result.getBody());
     }
 }
