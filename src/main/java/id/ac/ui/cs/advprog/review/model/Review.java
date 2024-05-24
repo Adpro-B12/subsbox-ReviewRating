@@ -63,6 +63,7 @@ public class Review {
         this.stateString = "APPROVED";
     }
 
+    @PostLoad
     public void postload(){
         switch (stateString){
             case "APPROVED" -> this.state = new ApprovedState();

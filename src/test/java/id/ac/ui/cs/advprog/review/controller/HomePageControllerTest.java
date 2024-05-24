@@ -1,31 +1,24 @@
 package id.ac.ui.cs.advprog.review.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.ui.Model;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(HomePageController.class)
 public class HomePageControllerTest {
-    @InjectMocks
-    private HomePageController homePageController;
 
-    @Mock
-    private Model model;
-
-    @BeforeEach
-    void setUp(){
-        MockitoAnnotations.initMocks(this);
-    }
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
-    void testHomePageController(){
-        String expectedName = "HomePage";
-
-        assertEquals(expectedName, homePageController.createUserPage());
-        verify(model, times(0)).addAttribute(anyString(), any());
+    public void testCreateUserPage() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("HomePage"));
     }
 }

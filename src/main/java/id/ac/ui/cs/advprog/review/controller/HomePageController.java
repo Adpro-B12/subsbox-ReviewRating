@@ -11,6 +11,6 @@ public class HomePageController {
     @GetMapping("")
     @ResponseBody
     public String createUserPage() {
-        return "<h1>Test Rating Page sudah berhasil!</h1>";
+        return "HomePage";
     }
 }
