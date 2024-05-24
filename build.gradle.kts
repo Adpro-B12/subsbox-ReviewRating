@@ -32,6 +32,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation ("org.junit.jupiter:junit-jupiter:5.7.0")
 }
 
 tasks.register<Test>("unitTest") {
