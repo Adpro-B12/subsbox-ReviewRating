@@ -1,9 +1,11 @@
 plugins {
     java
     jacoco
+    id("org.sonarqube") version "4.4.1.3373"
     id("org.springframework.boot") version "3.2.4"
     id("io.spring.dependency-management") version "1.1.4"
 }
+
 
 group = "id.ac.ui.cs.advprog"
 version = "0.0.1-SNAPSHOT"
@@ -22,18 +24,33 @@ repositories {
     mavenCentral()
 }
 
+extra["springCloudVersion"] = "2022.0.4"
+
 dependencies {
+    implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.postgresql:postgresql")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+    implementation("javax.persistence:javax.persistence-api:2.2")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
+    //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation ("org.junit.jupiter:junit-jupiter:5.7.0")
+    testImplementation("com.h2database:h2")
+    implementation("org.springframework.boot:spring-boot-starter-web")
 }
+
+//dependencyManagement {
+//    imports {
+//        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+//    }
+//}
 
 tasks.register<Test>("unitTest") {
     description = "Runs unit tests."
