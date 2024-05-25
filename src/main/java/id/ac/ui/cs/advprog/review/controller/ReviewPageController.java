@@ -12,13 +12,13 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/api/reviews")
 public class ReviewPageController {
 
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping
+    @PostMapping("/create")
     public CompletableFuture<ResponseEntity<Review>> createReview(@RequestBody Review review) {
         return CompletableFuture.supplyAsync(() -> {
             Review createdReview = reviewService.create(review);
@@ -26,7 +26,7 @@ public class ReviewPageController {
         });
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public CompletableFuture<ResponseEntity<List<Review>>> getAllReviews() {
         return CompletableFuture.supplyAsync(() -> {
             List<Review> reviews = reviewService.findAll();
@@ -34,7 +34,7 @@ public class ReviewPageController {
         });
     }
 
-    @DeleteMapping("/{reviewId}")
+    @DeleteMapping("/delete/{reviewId}")
     public CompletableFuture<ResponseEntity<Void>> deleteReview(@PathVariable String reviewId) {
         return CompletableFuture.supplyAsync(() -> {
             Optional<Review> review = reviewService.findReviewById(reviewId);
