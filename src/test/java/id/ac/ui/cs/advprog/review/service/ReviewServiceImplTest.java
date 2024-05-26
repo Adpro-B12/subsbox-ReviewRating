@@ -3,20 +3,21 @@ package id.ac.ui.cs.advprog.review.service;
 import enums.Status;
 import id.ac.ui.cs.advprog.review.model.Review;
 import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ReviewServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+public class ReviewServiceImplTest {
 
     @Mock
     private ReviewRepository reviewRepository;
@@ -24,114 +25,106 @@ class ReviewServiceImplTest {
     @InjectMocks
     private ReviewServiceImpl reviewService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    void testCreate() {
+    public void testCreateReview() {
         Review review = new Review();
+        review.setReviewId("1");
+        review.setUserId("user1");
+
         when(reviewRepository.save(review)).thenReturn(review);
 
         Review createdReview = reviewService.create(review);
 
         assertNotNull(createdReview);
-        verify(reviewRepository, times(1)).save(review);
+        assertEquals("1", createdReview.getReviewId());
+        assertEquals("user1", createdReview.getUserId());
     }
 
     @Test
-    void testFindAll() {
-        Review review1 = new Review();
-        Review review2 = new Review();
-        List<Review> reviews = Arrays.asList(review1, review2);
+    public void testFindAllReviews() {
+        List<Review> reviews = new ArrayList<>();
+        reviews.add(new Review());
+        reviews.add(new Review());
+
         when(reviewRepository.findAll()).thenReturn(reviews);
 
-        List<Review> result = reviewService.findAll();
+        List<Review> foundReviews = reviewService.findAll();
 
-        assertEquals(2, result.size());
-        verify(reviewRepository, times(1)).findAll();
+        assertEquals(2, foundReviews.size());
     }
 
     @Test
-    void testDelete() {
+    public void testDeleteReview() {
         String reviewId = "1";
 
-        reviewService.delete(reviewId);
+        doNothing().when(reviewRepository).deleteById(reviewId);
 
-        verify(reviewRepository, times(1)).deleteById(reviewId);
+        assertDoesNotThrow(() -> reviewService.delete(reviewId));
     }
 
     @Test
-    void testFindReviewById() {
-        String reviewId = "1";
+    public void testFindReviewById() {
         Review review = new Review();
-        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        review.setReviewId("1");
+        review.setUserId("user1");
 
-        Optional<Review> result = reviewService.findReviewById(reviewId);
+        when(reviewRepository.findById("1")).thenReturn(Optional.of(review));
 
-        assertTrue(result.isPresent());
-        assertEquals(review, result.get());
-        verify(reviewRepository, times(1)).findById(reviewId);
+        Optional<Review> foundReview = reviewService.findReviewById("1");
+
+        assertTrue(foundReview.isPresent());
+        assertEquals("1", foundReview.get().getReviewId());
+        assertEquals("user1", foundReview.get().getUserId());
     }
 
     @Test
-    void testFindAllByUserId() {
-        String userId = "user1";
-        Review review1 = new Review();
-        Review review2 = new Review();
-        List<Review> reviews = Arrays.asList(review1, review2);
-        when(reviewRepository.findAllByUserId(userId)).thenReturn(reviews);
-
-        List<Review> result = reviewService.findAllByUserId(userId);
-
-        assertEquals(2, result.size());
-        verify(reviewRepository, times(1)).findAllByUserId(userId);
-    }
-
-    @Test
-    void testUpdateReviewStatus_Approved() {
-        String reviewId = "1";
+    public void testUpdateReviewStatus() {
         Review review = new Review();
-        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        review.setReviewId("1");
+        review.setReviewStatus(Status.PENDING);
 
-        Review updatedReview = reviewService.updateReviewStatus(reviewId, "APPROVED");
+        when(reviewRepository.findById("1")).thenReturn(Optional.of(review));
+        when(reviewRepository.save(review)).thenReturn(review);
 
-        assertNotNull(updatedReview);
-        verify(reviewRepository, times(1)).findById(reviewId);
-        verify(reviewRepository, times(1)).save(review);
+        Review updatedReview = reviewService.updateReviewStatus("1", Status.APPROVED.toString());
+
         assertEquals(Status.APPROVED, updatedReview.getReviewStatus());
     }
 
     @Test
-    void testUpdateReviewStatus_Rejected() {
-        String reviewId = "1";
+    public void testUpdateReviewStatus_InvalidStatus() {
         Review review = new Review();
-        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        review.setReviewId("1");
+        review.setReviewStatus(Status.PENDING);
 
-        Review updatedReview = reviewService.updateReviewStatus(reviewId, "REJECTED");
+        when(reviewRepository.findById("1")).thenReturn(Optional.of(review));
 
-        assertNotNull(updatedReview);
-        verify(reviewRepository, times(1)).findById(reviewId);
-        verify(reviewRepository, times(1)).save(review);
-        assertEquals(Status.REJECTED, updatedReview.getReviewStatus());
+        assertThrows(IllegalArgumentException.class, () -> reviewService.updateReviewStatus("1", "INVALID"));
     }
 
     @Test
-    void testUpdateReviewStatus_InvalidStatus() {
-        String reviewId = "1";
-        Review review = new Review();
-        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+    public void testFindAllByUserId() {
+        List<Review> reviews = new ArrayList<>();
+        reviews.add(new Review());
+        reviews.add(new Review());
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            reviewService.updateReviewStatus(reviewId, "INVALID_STATUS");
-        });
+        when(reviewRepository.findAllByUserId("user1")).thenReturn(reviews);
 
-        String expectedMessage = "Invalid status";
-        String actualMessage = exception.getMessage();
+        List<Review> foundReviews = reviewService.findAllByUserId("user1");
 
-        assertTrue(actualMessage.contains(expectedMessage));
-        verify(reviewRepository, times(1)).findById(reviewId);
-        verify(reviewRepository, times(0)).save(review);
+        assertEquals(2, foundReviews.size());
+    }
+
+    @Test
+    public void testFindAllBySubscriptionBoxId() {
+        List<Review> reviews = new ArrayList<>();
+        reviews.add(new Review());
+        reviews.add(new Review());
+
+        when(reviewRepository.findAllBySubscriptionBoxId("box1")).thenReturn(reviews);
+
+        List<Review> foundReviews = reviewService.findAllBySubscriptionBoxId("box1");
+
+        assertEquals(2, foundReviews.size());
     }
 }

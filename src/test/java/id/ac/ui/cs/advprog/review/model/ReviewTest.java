@@ -40,4 +40,60 @@ public class ReviewTest {
         assertEquals("REJECTED", review.getStateString());
         assertEquals(RejectedState.class, review.getState().getClass());
     }
+
+    @Test
+    public void testGetId() {
+        assertEquals("1", review.getReviewId());
+    }
+
+    @Test
+    public void testGetRating() {
+        assertEquals(5, review.getRatingScore());
+    }
+
+    @Test
+    public void testGetComment() {
+        assertEquals("Barang bagus punya", review.getReview());
+    }
+
+    @Test
+    public void testGetUserId() {
+        assertEquals("1321", review.getUserId());
+    }
+
+    @Test
+    public void testGetSubscriptionBoxId() {
+        assertEquals("box456", review.getSubscriptionBoxId());
+    }
+
+    @Test
+    public void testSetId() {
+        review.setReviewId("2");
+        assertEquals("2", review.getReviewId());
+    }
+
+    @Test
+    public void testSetRating() {
+        review.setRatingScore(4);
+        assertEquals(4, review.getRatingScore());
+    }
+
+    @Test
+    public void testSetComment() {
+        review.setReview("Barang bagus banget");
+        assertEquals("Barang bagus banget", review.getReview());
+    }
+
+    @Test
+    public void testSetUserId() {
+        review.setUserId("1322");
+        assertEquals("1322", review.getUserId());
+    }
+
+    @Test
+    public void testSetSubscriptionBoxId() {
+        review.setSubscriptionBoxId("box457");
+        assertEquals("box457", review.getSubscriptionBoxId());
+    }
+
 }
