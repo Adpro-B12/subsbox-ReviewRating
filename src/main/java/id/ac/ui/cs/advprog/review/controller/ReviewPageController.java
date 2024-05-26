@@ -71,4 +71,12 @@ public class ReviewPageController {
             return ResponseEntity.ok(reviews);
         });
     }
+
+    @GetMapping("/subscription/{subscriptionBoxId}")
+    public CompletableFuture<ResponseEntity<List<Review>>> getAllReviewsBySubscriptionBoxId(@PathVariable String subscriptionBoxId) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<Review> reviews = reviewService.findAllBySubscriptionBoxId(subscriptionBoxId);
+            return ResponseEntity.ok(reviews);
+        });
+    }
 }

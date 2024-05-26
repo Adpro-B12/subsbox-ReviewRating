@@ -12,4 +12,6 @@ public interface ReviewService {
     Optional<Review> findReviewById(String reviewId);
     List<Review> findAllByUserId(String userId);
     Review updateReviewStatus(String idReview, String status);
+
+    List<Review> findAllBySubscriptionBoxId(String subscriptionBoxId);
 }

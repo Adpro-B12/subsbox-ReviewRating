@@ -53,4 +53,9 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(review);
         return review;
     }
+
+    @Override
+    public List<Review> findAllBySubscriptionBoxId(String subscriptionBoxId) {
+        return reviewRepository.findAllBySubscriptionBoxId(subscriptionBoxId);
+    }
 }
