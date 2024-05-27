@@ -12,13 +12,4 @@ public enum Status {
     private Status(String value){
         this.value = value;
     }
-
-    public static boolean contains(String param){
-        for(Status status : Status.values()){
-            if(status.name().equals(param)){
-                return true;
-            }
-        }
-        return false;
-    }
 }

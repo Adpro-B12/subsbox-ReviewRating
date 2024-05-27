@@ -39,12 +39,13 @@ public class Review {
     @JsonIgnore
     private String stateString;
 
-    @Column(name = "review_status")
+    @Column(name = "review_status", nullable = false)
     private Status reviewStatus;
 
     public Review(){
-        this.stateString = Status.PENDING.getValue();
+        this.stateString = Status.PENDING.toString();
         this.state = new PendingState();
+        this.reviewStatus = Status.PENDING;
     }
 
     public Review(String reviewId, int ratingScore, String review, String userId, String subscriptionBoxId){
@@ -54,7 +55,7 @@ public class Review {
         this.userId = userId;
         this.subscriptionBoxId = subscriptionBoxId;
         this.state = new PendingState();
-        this. reviewStatus = Status.PENDING;
+        this.reviewStatus = Status.PENDING;
         this.stateString = Status.PENDING.toString();
     }
 
