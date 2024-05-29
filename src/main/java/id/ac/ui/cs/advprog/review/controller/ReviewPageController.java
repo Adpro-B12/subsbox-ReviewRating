@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.review.controller;
 
-import enums.Status;
 import id.ac.ui.cs.advprog.review.model.Review;
 import id.ac.ui.cs.advprog.review.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
